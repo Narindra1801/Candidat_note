@@ -17,6 +17,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         if(target === 'correcteurs') loadCorrecteurs();
         if(target === 'matieres') loadMatieres();
         if(target === 'parametres') loadParametres();
+        if(target === 'notes') loadNotes();
+        if(target === 'resultats') loadResultats();
     });
 });
 
@@ -148,6 +150,83 @@ async function loadSelectOptions() {
     }
 }
 
+async function loadNotes() {
+    try {
+        const res = await fetch(`${API_BASE}/notes`);
+        const data = await res.json();
+        const tbody = document.getElementById('notes-tbody');
+        tbody.innerHTML = '';
+        
+        data.forEach(n => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${n.id}</td>
+                    <td>${n.candidat.nom} ${n.candidat.prenom}</td>
+                    <td>${n.matiere.nom}</td>
+                    <td>${n.correcteur.nom} ${n.correcteur.prenom}</td>
+                    <td>${n.note}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editNote(${n.id}, ${n.candidat.id}, ${n.matiere.id}, ${n.correcteur.id}, ${n.note})">Modifier</button>
+                        <button class="btn-danger" onclick="deleteItem('notes', ${n.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch(err) {
+        console.error("Error loading notes", err);
+    }
+}
+
+async function loadResultats() {
+    try {
+        const res = await fetch(`${API_BASE}/resultats`);
+        const data = await res.json();
+        const tbody = document.getElementById('resultats-tbody');
+        tbody.innerHTML = '';
+        
+        data.forEach(r => {
+            const rowClass = r.status === 'Admis' ? 'row-success' : 'row-danger';
+            tbody.innerHTML += `
+                <tr class="${rowClass}" style="${r.status === 'Admis' ? 'background: rgba(46, 213, 115, 0.1);' : 'background: rgba(255, 71, 87, 0.1);'}">
+                    <td>${r.nomCandidat} ${r.prenomCandidat}</td>
+                    <td>${r.matricule}</td>
+                    <td>${r.nomMatiere}</td>
+                    <td><strong>${r.noteCalculee}</strong></td>
+                    <td>${r.operateur} ${r.seuil}</td>
+                    <td><strong>${r.status}</strong></td>
+                </tr>
+            `;
+        });
+    } catch(err) {
+        console.error("Error loading resultats", err);
+    }
+}
+
+async function loadSelectOptionsNotes() {
+    try {
+        const [candidatsRes, matieresRes, correcteursRes] = await Promise.all([
+            fetch(`${API_BASE}/candidats`),
+            fetch(`${API_BASE}/matieres`),
+            fetch(`${API_BASE}/correcteurs`)
+        ]);
+        
+        const candidats = await candidatsRes.json();
+        const matieres = await matieresRes.json();
+        const correcteurs = await correcteursRes.json();
+        
+        const candSelect = document.getElementById('form-candidat');
+        const matSelect = document.getElementById('form-matiere');
+        const corrSelect = document.getElementById('form-correcteur');
+        
+        candSelect.innerHTML = candidats.map(c => `<option value="${c.id}">${c.nom} ${c.prenom}</option>`).join('');
+        matSelect.innerHTML = matieres.map(m => `<option value="${m.id}">${m.nom}</option>`).join('');
+        corrSelect.innerHTML = correcteurs.map(c => `<option value="${c.id}">${c.nom} ${c.prenom}</option>`).join('');
+        
+    } catch (err) {
+        console.error("Error loading options for notes", err);
+    }
+}
+
 // Modal Logic
 const modal = document.getElementById('modal');
 
@@ -160,28 +239,35 @@ function showAddForm(type) {
     if (type === 'candidat') title = 'Nouveau Candidat';
     else if (type === 'correcteur') title = 'Nouveau Correcteur';
     else if (type === 'matiere') title = 'Nouvelle Matière';
-    else title = 'Nouveau Paramètre';
+    else if (type === 'parametre') title = 'Nouveau Paramètre';
+    else title = 'Nouvelle Note';
     
     document.getElementById('modal-title').innerText = title;
     
     // Show/hide fields
     const isParam = type === 'parametre';
+    const isNote = type === 'note';
+    
     document.getElementById('matricule-group').style.display = type === 'candidat' ? 'block' : 'none';
     
     const nomGroup = document.getElementById('form-nom').parentElement;
-    nomGroup.style.display = isParam ? 'none' : 'block';
+    nomGroup.style.display = (isParam || isNote) ? 'none' : 'block';
     
     const prenomGroup = document.getElementById('form-prenom').parentElement;
     prenomGroup.style.display = (type === 'candidat' || type === 'correcteur') ? 'block' : 'none';
     
-    document.getElementById('matiere-group').style.display = isParam ? 'block' : 'none';
+    document.getElementById('candidat-group').style.display = isNote ? 'block' : 'none';
+    document.getElementById('matiere-group').style.display = (isParam || isNote) ? 'block' : 'none';
+    document.getElementById('correcteur-group').style.display = isNote ? 'block' : 'none';
+    
     document.getElementById('operateur-group').style.display = isParam ? 'block' : 'none';
     document.getElementById('resolution-group').style.display = isParam ? 'block' : 'none';
     document.getElementById('seuil-group').style.display = isParam ? 'block' : 'none';
     
-    if (isParam) {
-        loadSelectOptions();
-    }
+    document.getElementById('note-group').style.display = isNote ? 'block' : 'none';
+    
+    if (isParam) loadSelectOptions();
+    if (isNote) loadSelectOptionsNotes();
     
     modal.classList.add('show');
 }
@@ -233,10 +319,13 @@ function editMatiere(id, nom) {
 
 function hideParamFields() {
     if(document.getElementById('matiere-group')) {
+        document.getElementById('candidat-group').style.display = 'none';
         document.getElementById('matiere-group').style.display = 'none';
+        document.getElementById('correcteur-group').style.display = 'none';
         document.getElementById('operateur-group').style.display = 'none';
         document.getElementById('resolution-group').style.display = 'none';
         document.getElementById('seuil-group').style.display = 'none';
+        document.getElementById('note-group').style.display = 'none';
     }
 }
 
@@ -265,6 +354,32 @@ async function editParametre(id, matiereId, operateurId, resolutionId, seuil) {
     modal.classList.add('show');
 }
 
+async function editNote(id, candidatId, matiereId, correcteurId, note) {
+    document.getElementById('form-id').value = id;
+    document.getElementById('form-type').value = 'note';
+    
+    await loadSelectOptionsNotes();
+    
+    document.getElementById('form-candidat').value = candidatId;
+    document.getElementById('form-matiere').value = matiereId;
+    document.getElementById('form-correcteur').value = correcteurId;
+    document.getElementById('form-note').value = note;
+    
+    document.getElementById('modal-title').innerText = 'Modifier Note';
+    
+    document.getElementById('matricule-group').style.display = 'none';
+    document.getElementById('form-nom').parentElement.style.display = 'none';
+    document.getElementById('form-prenom').parentElement.style.display = 'none';
+    
+    hideParamFields();
+    document.getElementById('candidat-group').style.display = 'block';
+    document.getElementById('matiere-group').style.display = 'block';
+    document.getElementById('correcteur-group').style.display = 'block';
+    document.getElementById('note-group').style.display = 'block';
+    
+    modal.classList.add('show');
+}
+
 function closeModal() {
     modal.classList.remove('show');
 }
@@ -275,12 +390,13 @@ document.getElementById('data-form').addEventListener('submit', async (e) => {
     
     const id = document.getElementById('form-id').value;
     const type = document.getElementById('form-type').value; 
-    let endpoint = type + 's'; // candidats, correcteurs, matieres
+    let endpoint = type + 's'; // candidats, correcteurs, matieres, parametres, notes
     
     const payload = {};
     const isParam = type === 'parametre';
+    const isNote = type === 'note';
     
-    if (!isParam) {
+    if (!isParam && !isNote) {
         payload.nom = document.getElementById('form-nom').value;
         if (type !== 'matiere') {
             payload.prenom = document.getElementById('form-prenom').value;
@@ -288,11 +404,16 @@ document.getElementById('data-form').addEventListener('submit', async (e) => {
         if (type === 'candidat') {
             payload.matricule = document.getElementById('form-matricule').value;
         } 
-    } else {
+    } else if (isParam) {
         payload.matiere = { id: parseInt(document.getElementById('form-matiere').value) };
         payload.operateur = { id: parseInt(document.getElementById('form-operateur').value) };
         payload.resolution = { id: parseInt(document.getElementById('form-resolution').value) };
         payload.seuil = parseFloat(document.getElementById('form-seuil').value);
+    } else if (isNote) {
+        payload.candidat = { id: parseInt(document.getElementById('form-candidat').value) };
+        payload.matiere = { id: parseInt(document.getElementById('form-matiere').value) };
+        payload.correcteur = { id: parseInt(document.getElementById('form-correcteur').value) };
+        payload.note = parseFloat(document.getElementById('form-note').value);
     }
     
     const method = id ? 'PUT' : 'POST';
@@ -309,7 +430,8 @@ document.getElementById('data-form').addEventListener('submit', async (e) => {
         if(type === 'candidat') loadCandidats();
         else if(type === 'correcteur') loadCorrecteurs();
         else if(type === 'matiere') loadMatieres();
-        else loadParametres();
+        else if(type === 'parametre') loadParametres();
+        else loadNotes();
         
     } catch(err) {
         alert("Une erreur est survenue !");
@@ -327,7 +449,8 @@ async function deleteItem(endpoint, id) {
             if(endpoint === 'candidats') loadCandidats();
             else if(endpoint === 'correcteurs') loadCorrecteurs();
             else if(endpoint === 'matieres') loadMatieres();
-            else loadParametres();
+            else if(endpoint === 'parametres') loadParametres();
+            else loadNotes();
         } catch(err) {
             alert("Erreur lors de la suppression");
         }

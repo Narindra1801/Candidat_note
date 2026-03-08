@@ -1,4 +1,5 @@
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\ResolutionService.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\CalculController.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\repository\MatiereRepository.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\ParametreController.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\CorrecteurController.java
@@ -6,11 +7,15 @@ D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\repository\
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Parametre.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\repository\OperateurRepository.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Resolution.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Note.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\OperateurService.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Correcteur.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\repository\NoteRepository.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\CandidatApplication.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\NoteService.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Operateur.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\MatiereController.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\dto\ResultatDTO.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\CandidatController.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\model\Candidat.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\MatiereService.java
@@ -24,3 +29,5 @@ D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\connexion\d
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\CorrecteurService.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\CandidatService.java
 D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\repository\ParametreRepository.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\controller\NoteController.java
+D:\ITU\S6\Mr Niaina\Candidat_note\src\main\java\com\exemple\candidat\service\CalculResultatService.java

@@ -22,6 +22,8 @@
                 <button class="tab-btn" data-target="correcteurs">Correcteurs</button>
                 <button class="tab-btn" data-target="matieres">Matières</button>
                 <button class="tab-btn" data-target="parametres">Paramètres</button>
+                <button class="tab-btn" data-target="notes">Notes</button>
+                <button class="tab-btn" data-target="resultats">Résultats</button>
             </nav>
         </header>
 
@@ -119,6 +121,56 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Notes Section -->
+            <section id="notes" class="tab-content">
+                <div class="section-header">
+                    <h2>Liste des Notes</h2>
+                    <button class="btn-primary" onclick="showAddForm('note')">+ Nouvelle Note</button>
+                </div>
+                <div class="table-container">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Candidat</th>
+                                <th>Matière</th>
+                                <th>Correcteur</th>
+                                <th>Note</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notes-tbody">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Résultats Section -->
+            <section id="resultats" class="tab-content">
+                <div class="section-header">
+                    <h2>Résultats Calculés</h2>
+                    <!-- Pas de bouton d'ajout pour les résultats (lecture seule) -->
+                </div>
+                <div class="table-container">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>Candidat</th>
+                                <th>Matricule</th>
+                                <th>Matière</th>
+                                <th>Note Finale</th>
+                                <th>Condition</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultats-tbody">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -145,9 +197,19 @@
                     <input type="text" id="form-matricule">
                 </div>
                 
+                <div class="form-group" id="candidat-group" style="display: none;">
+                    <label for="form-candidat">Candidat</label>
+                    <select id="form-candidat"></select>
+                </div>
+
                 <div class="form-group" id="matiere-group" style="display: none;">
                     <label for="form-matiere">Matière</label>
                     <select id="form-matiere"></select>
+                </div>
+                
+                <div class="form-group" id="correcteur-group" style="display: none;">
+                    <label for="form-correcteur">Correcteur</label>
+                    <select id="form-correcteur"></select>
                 </div>
 
                 <div class="form-group" id="operateur-group" style="display: none;">
@@ -163,6 +225,11 @@
                 <div class="form-group" id="seuil-group" style="display: none;">
                     <label for="form-seuil">Seuil</label>
                     <input type="number" id="form-seuil" step="0.01">
+                </div>
+                
+                <div class="form-group" id="note-group" style="display: none;">
+                    <label for="form-note">Note</label>
+                    <input type="number" id="form-note" step="0.01">
                 </div>
 
                 <div class="modal-actions">
