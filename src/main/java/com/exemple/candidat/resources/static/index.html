@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation Candidat - Portail d'Admission</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <main class="dashboard glass-panel">
+        <header class="dashboard-header">
+            <div>
+                <h1 class="logo-text">Eval<span>Sys</span></h1>
+                <p class="subtitle">Moteur de Décision Dynamique</p>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                <a href="candidats.html" class="secondary-btn" title="Gérer les candidats" style="text-decoration: none; padding: 12px 24px; border-radius: 12px; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; gap: 8px; transition: all 0.3s; font-family: 'Inter';">
+                    <i class="fas fa-users"></i> Candidats
+                </a>
+                <a href="correcteurs.html" class="secondary-btn" title="Gérer les correcteurs" style="text-decoration: none; padding: 12px 24px; border-radius: 12px; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; gap: 8px; transition: all 0.3s; font-family: 'Inter';">
+                    <i class="fas fa-chalkboard-teacher"></i> Correcteurs
+                </a>
+                <div class="search-container">
+                    <input type="number" id="candidatIdInput" placeholder="ID du Candidat (ex: 1, 3...)" min="1">
+                    <button id="searchBtn" class="primary-btn">Analyser</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Loader State -->
+        <div id="loader" class="state-container hidden">
+            <div class="spinner"></div>
+            <p>Calcul des probabilités statistiques...</p>
+        </div>
+
+        <!-- Initial/Empty State -->
+        <div id="emptyState" class="state-container">
+            <div class="icon-placeholder">🔍</div>
+            <h2>Prêt à Évaluer</h2>
+            <p>Saisissez le numéro d'identifiant d'un candidat ci-dessus pour vérifier ses résultats académiques.</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="state-container hidden">
+            <div class="icon-placeholder error-icon">⚠️</div>
+            <h2>Candidat Introuvable</h2>
+            <p id="errorMessage">Veuillez vérifier l'identifiant saisi.</p>
+        </div>
+
+        <!-- Results Dashboard -->
+        <div id="resultsBoard" class="results-board hidden">
+            <div class="profile-card glass-card">
+                <div class="profile-info">
+                    <h3>Dossier Étudiant</h3>
+                    <p class="candidate-id">Candidat N° <span id="displayId">--</span></p>
+                </div>
+                <div class="verdict-container">
+                    <div id="finalVerdict" class="verdict-badge placeholder">En attente</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Analyse par Compétence</h3>
+            <div class="subjects-grid" id="subjectsGrid">
+                <!-- Les cartes matières seront injectées ici par JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

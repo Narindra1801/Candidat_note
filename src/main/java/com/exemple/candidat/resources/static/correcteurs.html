@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Correcteurs - EvalSys</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <div class="background-orbs">
+        <div class="orb orb-1" style="background: #eab308; top: -50px; left: -50px;"></div>
+        <div class="orb orb-2" style="background: #ef4444; bottom: 0px; right: 0px;"></div>
+        <div class="orb orb-3" style="background: #3b82f6; top: 50%; left: 30%;"></div>
+    </div>
+
+    <main class="dashboard glass-panel">
+        <header class="dashboard-header" style="border-bottom: none; padding-bottom: 0;">
+            <div>
+                <h1 class="logo-text">Eval<span>Sys</span></h1>
+                <p class="subtitle">Gestion du Corps Enseignant</p>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 15px;">
+                <a href="index.html" class="secondary-btn" style="text-decoration: none; padding: 12px 24px; border-radius: 12px; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; gap: 8px; transition: all 0.3s; font-family: 'Inter';">
+                    <i class="fas fa-arrow-left"></i> Retour à l'Évaluation
+                </a>
+                <button id="addBtn" class="primary-btn"><i class="fas fa-user-plus"></i> Nouveau Correcteur</button>
+            </div>
+        </header>
+
+        <!-- Loader State -->
+        <div id="loader" class="state-container hidden" style="margin-top: 2rem;">
+            <div class="spinner" style="border-top-color: #ef4444;"></div>
+            <p>Chargement des données du personnel...</p>
+        </div>
+
+        <!-- Data Grid -->
+        <div class="results-board" id="resultsBoard" style="margin-top: 1rem;">
+            <div class="table-container">
+                <table class="glass-table w-100">
+                    <thead>
+                        <tr>
+                            <th>N° Correcteur</th>
+                            <th>Nom Famille</th>
+                            <th>Prénom</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="correcteursTableBody">
+                        <!-- Lignes injectées par JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form (Glass CSS) -->
+    <div id="correcteurModal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel" style="border-top: 4px solid #ef4444;">
+            <h2 id="modalTitle" style="margin-bottom: 20px;">Ajouter un Correcteur</h2>
+            <form id="correcteurForm">
+                <input type="hidden" id="correcteurId">
+                
+                <div class="input-group">
+                    <label>Nom de Famille</label>
+                    <input type="text" id="nomInput" required placeholder="Ex: Dubois">
+                </div>
+                
+                <div class="input-group">
+                    <label>Prénom</label>
+                    <input type="text" id="prenomInput" required placeholder="Ex: Pierre">
+                </div>
+                
+                <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 30px; justify-content: flex-end;">
+                    <button type="button" id="cancelBtn" class="secondary-btn" style="padding: 10px 20px; border-radius: 8px; background: rgba(255,255,255,0.1); color: white; border: none; cursor: pointer;">Annuler</button>
+                    <button type="submit" id="saveBtn" class="primary-btn" style="padding: 10px 20px; border-radius: 8px; background: #ef4444;">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Generic Table/Modal CSS -->
+    <style>
+        .glass-table { width: 100%; border-collapse: collapse; color: var(--text-main); }
+        .glass-table th, .glass-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-table th { font-family: 'Outfit'; font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+        .glass-table tr:hover { background-color: rgba(255, 255, 255, 0.03); transition: background-color 0.2s; }
+        
+        .icon-btn { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; margin-left: 10px; cursor: pointer; transition: color 0.2s, transform 0.2s; }
+        .icon-btn:hover { transform: scale(1.1); }
+        .edit-btn:hover { color: var(--accent-blue); }
+        .delete-btn:hover { color: var(--danger); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 1; transition: opacity 0.3s ease; }
+        .modal-overlay.hidden { opacity: 0; pointer-events: none; }
+        .modal-content { width: 90%; max-width: 500px; padding: 30px; border-radius: 20px; transform: translateY(0); transition: transform 0.3s ease; }
+        .modal-overlay.hidden .modal-content { transform: translateY(50px); }
+        
+        .input-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+        .input-group input { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--card-border); color: white; padding: 12px; border-radius: 8px; font-family: 'Inter'; width: 100%; outline: none; transition: var(--transition); }
+        .input-group input:focus { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .secondary-btn:hover { background: rgba(255,255,255,0.2) !important; }
+        #saveBtn:hover { background: #dc2626 !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+    </style>
+
+    <script src="correcteurs.js"></script>
+</body>
+</html>
