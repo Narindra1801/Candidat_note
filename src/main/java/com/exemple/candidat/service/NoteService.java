@@ -18,6 +18,10 @@ public class NoteService {
         return repository.findAll();
     }
 
+    public List<Note> getByCandidatId(Integer candidatId) {
+        return repository.findByCandidatId(candidatId);
+    }
+
     public Optional<Note> getById(Integer id) {
         return repository.findById(id);
     }

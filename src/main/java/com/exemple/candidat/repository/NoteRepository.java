@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Integer> {
     List<Note> findByCandidatIdAndMatiereId(Integer candidatId, Integer matiereId);
+    List<Note> findByCandidatId(Integer candidatId);
 }

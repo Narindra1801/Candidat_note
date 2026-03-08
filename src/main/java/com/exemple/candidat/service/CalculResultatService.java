@@ -26,23 +26,30 @@ public class CalculResultatService {
     private ParametreService parametreService;
 
     public List<ResultatDTO> calculerResultats() {
-        List<ResultatDTO> resultats = new ArrayList<>();
         List<Note> allNotes = noteService.getAll();
+        return groupedCalculation(allNotes);
+    }
+
+    public List<ResultatDTO> calculerResultatsCandidat(Integer candidatId) {
+        List<Note> notesCandidat = noteService.getByCandidatId(candidatId);
+        return groupedCalculation(notesCandidat);
+    }
+
+    private List<ResultatDTO> groupedCalculation(List<Note> notes) {
+        List<ResultatDTO> resultats = new ArrayList<>();
         List<Parametre> parametres = parametreService.getAll();
 
         // Grouper les notes par Candidat puis par Matière
-        Map<Candidat, Map<Matiere, List<Note>>> notesByCandidatAndMatiere = allNotes.stream()
+        Map<Candidat, Map<Matiere, List<Note>>> notesByCandidatAndMatiere = notes.stream()
                 .collect(Collectors.groupingBy(Note::getCandidat,
                         Collectors.groupingBy(Note::getMatiere)));
 
         for (Map.Entry<Candidat, Map<Matiere, List<Note>>> entryCandidat : notesByCandidatAndMatiere.entrySet()) {
             Candidat candidat = entryCandidat.getKey();
-
             for (Map.Entry<Matiere, List<Note>> entryMatiere : entryCandidat.getValue().entrySet()) {
                 Matiere matiere = entryMatiere.getKey();
                 List<Note> notesPourMatiere = entryMatiere.getValue();
 
-                // Chercher le paramètre pour cette matière
                 Parametre param = parametres.stream()
                         .filter(p -> p.getMatiere().getId().equals(matiere.getId()))
                         .findFirst()
@@ -57,11 +64,9 @@ public class CalculResultatService {
                     dto.setSeuil(param.getSeuil());
                     dto.setOperateur(param.getOperateur().getOperateur());
 
-                    // Appliquer la résolution
                     double noteCalculee = appliquerResolution(notesPourMatiere, param.getResolution().getId());
-                    dto.setNoteCalculee(Math.round(noteCalculee * 100.0) / 100.0); // Arrondir 2 décimales
+                    dto.setNoteCalculee(Math.round(noteCalculee * 100.0) / 100.0);
 
-                    // Appliquer l'opérateur pour valider
                     boolean admis = verifierSeuil(noteCalculee, param.getSeuil(), dto.getOperateur());
                     dto.setStatus(admis ? "Admis" : "Ajourné");
 

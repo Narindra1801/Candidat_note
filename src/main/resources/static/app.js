@@ -38,6 +38,7 @@ async function loadCandidats() {
                     <td>${c.prenom}</td>
                     <td>${c.matricule}</td>
                     <td>
+                        <button class="btn-primary" style="margin-right: 5px;" onclick="viewCandidatNotes(${c.id}, '${c.nom}', '${c.prenom}')">Voir Notes</button>
                         <button class="btn-edit" onclick="editCandidat(${c.id}, '${c.nom}', '${c.prenom}', '${c.matricule}')">Modifier</button>
                         <button class="btn-danger" onclick="deleteItem('candidats', ${c.id})">Supprimer</button>
                     </td>
@@ -102,24 +103,52 @@ async function loadParametres() {
     try {
         const res = await fetch(`${API_BASE}/parametres`);
         const data = await res.json();
-        const tbody = document.getElementById('parametres-tbody');
-        tbody.innerHTML = '';
+        const container = document.getElementById('parametres-cards-container');
+        container.innerHTML = '';
         
+        if (data.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; grid-column: 1 / -1;">Aucun paramètre enregistré</p>';
+            return;
+        }
+
+        // Group by matiere name
+        const grouped = {};
         data.forEach(p => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.matiere.nom}</td>
-                    <td>${p.operateur.operateur}</td>
-                    <td>${p.resolution.nom}</td>
-                    <td>${p.seuil}</td>
-                    <td>
-                        <button class="btn-edit" onclick="editParametre(${p.id}, ${p.matiere.id}, ${p.operateur.id}, ${p.resolution.id}, ${p.seuil})">Modifier</button>
-                        <button class="btn-danger" onclick="deleteItem('parametres', ${p.id})">Supprimer</button>
-                    </td>
-                </tr>
-            `;
+            const matiereName = p.matiere.nom;
+            if (!grouped[matiereName]) grouped[matiereName] = [];
+            grouped[matiereName].push(p);
         });
+
+        // Generate cards
+        for (const [matiereName, params] of Object.entries(grouped)) {
+            let paramsHtml = '';
+            params.forEach(p => {
+                paramsHtml += `
+                    <div class="param-item">
+                        <div class="param-info">
+                            <span class="param-res">${p.resolution.nom}</span>
+                            <span class="param-cond">${p.operateur.operateur} ${p.seuil}</span>
+                        </div>
+                        <div class="param-actions">
+                            <button class="btn-edit" onclick="editParametre(${p.id}, ${p.matiere.id}, ${p.operateur.id}, ${p.resolution.id}, ${p.seuil})">Modifier</button>
+                            <button class="btn-danger" onclick="deleteItem('parametres', ${p.id})">Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="param-card">
+                    <div class="param-card-header">
+                        <h3>${matiereName}</h3>
+                        <span class="param-count">${params.length} règle(s)</span>
+                    </div>
+                    <div class="param-card-body">
+                        ${paramsHtml}
+                    </div>
+                </div>
+            `;
+        }
     } catch(err) {
         console.error("Error loading parametres", err);
     }
@@ -154,24 +183,74 @@ async function loadNotes() {
     try {
         const res = await fetch(`${API_BASE}/notes`);
         const data = await res.json();
-        const tbody = document.getElementById('notes-tbody');
-        tbody.innerHTML = '';
+        const container = document.getElementById('notes-cards-container');
+        container.innerHTML = '';
         
+        if (data.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; grid-column: 1 / -1;">Aucune note enregistrée</p>';
+            return;
+        }
+
+        // Group by matiere name
+        const groupedByMatiere = {};
         data.forEach(n => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${n.id}</td>
-                    <td>${n.candidat.nom} ${n.candidat.prenom}</td>
-                    <td>${n.matiere.nom}</td>
-                    <td>${n.correcteur.nom} ${n.correcteur.prenom}</td>
-                    <td>${n.note}</td>
-                    <td>
-                        <button class="btn-edit" onclick="editNote(${n.id}, ${n.candidat.id}, ${n.matiere.id}, ${n.correcteur.id}, ${n.note})">Modifier</button>
-                        <button class="btn-danger" onclick="deleteItem('notes', ${n.id})">Supprimer</button>
-                    </td>
-                </tr>
-            `;
+            const matiereName = n.matiere.nom;
+            if (!groupedByMatiere[matiereName]) groupedByMatiere[matiereName] = {};
+            
+            const candidatId = n.candidat.id;
+            const candidatName = `${n.candidat.nom} ${n.candidat.prenom}`;
+            
+            if (!groupedByMatiere[matiereName][candidatId]) {
+                groupedByMatiere[matiereName][candidatId] = {
+                    name: candidatName,
+                    notes: []
+                };
+            }
+            groupedByMatiere[matiereName][candidatId].notes.push(n);
         });
+
+        // Generate cards
+        for (const [matiereName, candidates] of Object.entries(groupedByMatiere)) {
+            let cardBodyHtml = '';
+            
+            for (const [candId, candData] of Object.entries(candidates)) {
+                let candidateNotesHtml = '';
+                candData.notes.forEach(n => {
+                    candidateNotesHtml += `
+                        <div class="note-item sub-item">
+                            <div class="note-info">
+                                <span class="note-correcteur">Correcteur: ${n.correcteur.nom} ${n.correcteur.prenom}</span>
+                            </div>
+                            <div class="note-value-actions">
+                                <span class="note-score">${n.note}</span>
+                                <div class="note-actions">
+                                    <button class="btn-edit" onclick="editNote(${n.id}, ${n.candidat.id}, ${n.matiere.id}, ${n.correcteur.id}, ${n.note})">Modifier</button>
+                                    <button class="btn-danger" onclick="deleteItem('notes', ${n.id})">Supprimer</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                cardBodyHtml += `
+                    <div class="candidate-group">
+                        <h4 class="candidate-name-header">${candData.name}</h4>
+                        ${candidateNotesHtml}
+                    </div>
+                `;
+            }
+
+            container.innerHTML += `
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <h3>${matiereName}</h3>
+                    </div>
+                    <div class="note-card-body">
+                        ${cardBodyHtml}
+                    </div>
+                </div>
+            `;
+        }
     } catch(err) {
         console.error("Error loading notes", err);
     }
@@ -181,22 +260,59 @@ async function loadResultats() {
     try {
         const res = await fetch(`${API_BASE}/resultats`);
         const data = await res.json();
-        const tbody = document.getElementById('resultats-tbody');
-        tbody.innerHTML = '';
+        const container = document.getElementById('resultats-cards-container');
+        container.innerHTML = '';
         
+        if (data.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; grid-column: 1 / -1;">Aucun résultat calculé</p>';
+            return;
+        }
+
+        // Group by candidate
+        const groupedByCandidate = {};
         data.forEach(r => {
-            const rowClass = r.status === 'Admis' ? 'row-success' : 'row-danger';
-            tbody.innerHTML += `
-                <tr class="${rowClass}" style="${r.status === 'Admis' ? 'background: rgba(46, 213, 115, 0.1);' : 'background: rgba(255, 71, 87, 0.1);'}">
-                    <td>${r.nomCandidat} ${r.prenomCandidat}</td>
-                    <td>${r.matricule}</td>
-                    <td>${r.nomMatiere}</td>
-                    <td><strong>${r.noteCalculee}</strong></td>
-                    <td>${r.operateur} ${r.seuil}</td>
-                    <td><strong>${r.status}</strong></td>
-                </tr>
-            `;
+            const candidateKey = r.matricule;
+            if (!groupedByCandidate[candidateKey]) {
+                groupedByCandidate[candidateKey] = {
+                    nom: r.nomCandidat,
+                    prenom: r.prenomCandidat,
+                    matricule: r.matricule,
+                    results: []
+                };
+            }
+            groupedByCandidate[candidateKey].results.push(r);
         });
+
+        for (const [key, candData] of Object.entries(groupedByCandidate)) {
+            let resultsHtml = '';
+            candData.results.forEach(r => {
+                const statusClass = r.status === 'Admis' ? 'status-admis' : 'status-ajourne';
+                resultsHtml += `
+                    <div class="result-item">
+                        <div class="result-info">
+                            <span class="result-matiere">${r.nomMatiere}</span>
+                            <span class="result-condition">Condition: ${r.operateur} ${r.seuil}</span>
+                        </div>
+                        <div class="result-score-status">
+                            <span class="result-score">${r.noteCalculee}</span>
+                            <span class="result-status ${statusClass}">${r.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="result-card">
+                    <div class="result-card-header">
+                        <h3>${candData.nom} ${candData.prenom}</h3>
+                        <span class="matricule-badge">${candData.matricule}</span>
+                    </div>
+                    <div class="result-card-body">
+                        ${resultsHtml}
+                    </div>
+                </div>
+            `;
+        }
     } catch(err) {
         console.error("Error loading resultats", err);
     }
@@ -459,3 +575,41 @@ async function deleteItem(endpoint, id) {
 
 // Initial load
 loadCandidats();
+
+// Candidat Notes Modal
+async function viewCandidatNotes(candidatId, nom, prenom) {
+    document.getElementById('notes-modal-title').innerText = `Notes de: ${nom} ${prenom}`;
+    const tbody = document.getElementById('candidat-notes-detail-tbody');
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Chargement...</td></tr>';
+    
+    document.getElementById('notes-modal').classList.add('show');
+    
+    try {
+        const res = await fetch(`${API_BASE}/resultats/candidat/${candidatId}`);
+        const results = await res.json();
+        
+        tbody.innerHTML = '';
+        if (results.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Aucun résultat calculé</td></tr>';
+        } else {
+            results.forEach(r => {
+                const statusClass = r.status === 'Admis' ? 'status-admis' : 'status-ajourne';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.nomMatiere}</td>
+                        <td><strong>${r.noteCalculee}</strong></td>
+                        <td>${r.operateur} ${r.seuil}</td>
+                        <td><span class="result-status ${statusClass}" style="font-size: 0.7rem;">${r.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (err) {
+        console.error("Error fetching results for candidat", err);
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">Erreur de chargement</td></tr>';
+    }
+}
+
+function closeNotesModal() {
+    document.getElementById('notes-modal').classList.remove('show');
+}

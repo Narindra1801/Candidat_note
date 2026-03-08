@@ -103,22 +103,8 @@
                     <h2>Liste des Paramètres</h2>
                     <button class="btn-primary" onclick="showAddForm('parametre')">+ Nouveau Paramètre</button>
                 </div>
-                <div class="table-container">
-                    <table class="glass-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Matière</th>
-                                <th>Opérateur</th>
-                                <th>Résolution</th>
-                                <th>Seuil</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="parametres-tbody">
-                            <!-- Data populated by JS -->
-                        </tbody>
-                    </table>
+                <div id="parametres-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
                 </div>
             </section>
 
@@ -128,22 +114,10 @@
                     <h2>Liste des Notes</h2>
                     <button class="btn-primary" onclick="showAddForm('note')">+ Nouvelle Note</button>
                 </div>
-                <div class="table-container">
-                    <table class="glass-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Candidat</th>
-                                <th>Matière</th>
-                                <th>Correcteur</th>
-                                <th>Note</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="notes-tbody">
-                            <!-- Data populated by JS -->
-                        </tbody>
-                    </table>
+                <!-- Container for the dynamic cards -->
+                <div id="notes-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
+                </div>
                 </div>
             </section>
 
@@ -153,22 +127,8 @@
                     <h2>Résultats Calculés</h2>
                     <!-- Pas de bouton d'ajout pour les résultats (lecture seule) -->
                 </div>
-                <div class="table-container">
-                    <table class="glass-table">
-                        <thead>
-                            <tr>
-                                <th>Candidat</th>
-                                <th>Matricule</th>
-                                <th>Matière</th>
-                                <th>Note Finale</th>
-                                <th>Condition</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultats-tbody">
-                            <!-- Data populated by JS -->
-                        </tbody>
-                    </table>
+                <div id="resultats-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
                 </div>
             </section>
         </main>
@@ -237,6 +197,31 @@
                     <button type="submit" class="btn-primary">Enregistrer</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- NOUVEAU MODAL : Détails des Notes -->
+    <div id="notes-modal" class="modal-overlay">
+        <div class="modal-content glass-panel" style="max-width: 600px;">
+            <h3 id="notes-modal-title">Notes de: Candidat</h3>
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Matière</th>
+                            <th>Note Finale</th>
+                            <th>Condition</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidat-notes-detail-tbody">
+                        <!-- Remplit via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-actions" style="margin-top: 1.5rem;">
+                <button type="button" class="btn-secondary" onclick="closeNotesModal()">Fermer</button>
+            </div>
         </div>
     </div>
 

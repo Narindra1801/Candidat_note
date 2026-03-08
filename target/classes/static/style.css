@@ -315,3 +315,317 @@ header {
     background: rgba(255,255,255,0.1);
     color: white;
 }
+
+/* Cards Grid */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.note-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.note-card-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-card-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--text-main);
+}
+
+.note-card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.note-item {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-item:last-child {
+    margin-bottom: 0;
+}
+
+.note-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.note-candidat {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text-main);
+}
+
+.note-correcteur {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.note-value-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.note-score {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.note-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.note-actions button {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.candidate-group {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.candidate-group:last-child {
+    margin-bottom: 0;
+}
+
+.candidate-name-header {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+}
+
+.note-item.sub-item {
+    background: rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.75rem;
+}
+
+.note-item.sub-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Result Cards */
+.result-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.result-card-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-card-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--text-main);
+}
+
+.matricule-badge {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+}
+
+.result-card-body {
+    padding: 1.25rem;
+}
+
+.result-item {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.result-matiere {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.result-condition {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.result-score-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+}
+
+.result-score {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.result-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-admis {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.status-ajourne {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+/* Paramètre Cards */
+.param-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.param-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.param-card-header {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.param-card-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--text-main);
+}
+
+.param-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.param-card-body {
+    padding: 1.25rem;
+}
+
+.param-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.param-item:last-child {
+    margin-bottom: 0;
+}
+
+.param-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.param-res {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.param-cond {
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.param-actions {
+    display: flex;
+    gap: 0.5rem;
+}

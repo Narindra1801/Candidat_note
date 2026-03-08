@@ -53,6 +53,7 @@ INSERT INTO t_parametre (id_matiere, id_operateur, id_resolution, seuil) VALUES
 INSERT INTO t_note (id_candidat, id_matiere, id_correcteur, note) VALUES
 -- Notes pour Emma Leroy (id_candidat=1)
 (1, 1, 1, 14.5),  -- Emma - Maths - Sophie Martin
+(1, 1, 2, 12.0),  -- Emma - Maths - Pierre Dubois
 (1, 2, 2, 12.0),  -- Emma - Physique - Pierre Dubois
 (1, 3, 3, 15.5),  -- Emma - Français - Claire Bernard
 (1, 4, 4, 16.0),  -- Emma - Anglais - Thomas Petit
@@ -61,7 +62,9 @@ INSERT INTO t_note (id_candidat, id_matiere, id_correcteur, note) VALUES
 
 -- Notes pour Lucas Moreau (id_candidat=2)
 (2, 1, 2, 8.5),   -- Lucas - Maths - Pierre Dubois
+(2, 1, 1, 10.0),  -- Lucas - Maths - Sophie Martin
 (2, 2, 3, 9.0),   -- Lucas - Physique - Claire Bernard
+(2, 2, 4, 8.5),   -- Lucas - Physique - Thomas Petit
 (2, 3, 4, 12.0),  -- Lucas - Français - Thomas Petit
 (2, 4, 1, 14.5),  -- Lucas - Anglais - Sophie Martin
 (2, 5, 2, 10.5),  -- Lucas - Histoire - Pierre Dubois
@@ -71,15 +74,18 @@ INSERT INTO t_note (id_candidat, id_matiere, id_correcteur, note) VALUES
 (3, 1, 4, 16.0),  -- Chloé - Maths - Thomas Petit
 (3, 2, 1, 14.0),  -- Chloé - Physique - Sophie Martin
 (3, 3, 2, 18.5),  -- Chloé - Français - Pierre Dubois
+(3, 3, 3, 17.0),  -- Chloé - Français - Claire Bernard
 (3, 4, 3, 19.0),  -- Chloé - Anglais - Claire Bernard
 (3, 5, 4, 15.5),  -- Chloé - Histoire - Thomas Petit
 (3, 6, 1, 16.5),  -- Chloé - Informatique - Sophie Martin
 
 -- Notes pour Hugo Girard (id_candidat=4)
 (4, 1, 2, 11.5),  -- Hugo - Maths - Pierre Dubois
+(4, 1, 1, 12.5),  -- Hugo - Maths - Sophie Martin
 (4, 2, 3, 10.0),  -- Hugo - Physique - Claire Bernard
 (4, 3, 4, 9.5),   -- Hugo - Français - Thomas Petit
 (4, 4, 1, 13.0),  -- Hugo - Anglais - Sophie Martin
+(4, 4, 2, 14.5),  -- Hugo - Anglais - Pierre Dubois
 (4, 5, 2, 14.0),  -- Hugo - Histoire - Pierre Dubois
 (4, 6, 3, 12.5),  -- Hugo - Informatique - Claire Bernard
 
@@ -89,12 +95,15 @@ INSERT INTO t_note (id_candidat, id_matiere, id_correcteur, note) VALUES
 (5, 3, 2, 14.5),  -- Léa - Français - Pierre Dubois
 (5, 4, 3, 12.0),  -- Léa - Anglais - Claire Bernard
 (5, 5, 4, 17.0),  -- Léa - Histoire - Thomas Petit
+(5, 5, 1, 16.0),  -- Léa - Histoire - Sophie Martin
 (5, 6, 1, 14.0),  -- Léa - Informatique - Sophie Martin
 
 -- Notes pour Nathan Roux (id_candidat=6)
 (6, 1, 2, 7.5),   -- Nathan - Maths - Pierre Dubois
+(6, 1, 3, 8.0),   -- Nathan - Maths - Claire Bernard
 (6, 2, 3, 8.5),   -- Nathan - Physique - Claire Bernard
 (6, 3, 4, 11.0),  -- Nathan - Français - Thomas Petit
 (6, 4, 1, 9.0),   -- Nathan - Anglais - Sophie Martin
 (6, 5, 2, 12.5),  -- Nathan - Histoire - Pierre Dubois
-(6, 6, 3, 10.0);  -- Nathan - Informatique - Claire Bernard
+(6, 6, 3, 10.0),  -- Nathan - Informatique - Claire Bernard
+(6, 6, 4, 11.5);  -- Nathan - Informatique - Thomas Petit

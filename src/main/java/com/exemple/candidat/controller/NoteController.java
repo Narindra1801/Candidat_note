@@ -20,6 +20,11 @@ public class NoteController {
         return service.getAll();
     }
 
+    @GetMapping("/candidat/{candidatId}")
+    public List<Note> getByCandidatId(@PathVariable Integer candidatId) {
+        return service.getByCandidatId(candidatId);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Note> getById(@PathVariable Integer id) {
         return service.getById(id)
