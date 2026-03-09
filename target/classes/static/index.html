@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Notes - Candidats & Correcteurs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container glass-panel">
+        <header>
+            <h1 class="gradient-text">Système de Gestion</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-target="candidats">Candidats</button>
+                <button class="tab-btn" data-target="correcteurs">Correcteurs</button>
+                <button class="tab-btn" data-target="matieres">Matières</button>
+                <button class="tab-btn" data-target="parametres">Paramètres</button>
+                <button class="tab-btn" data-target="notes">Notes</button>
+                <button class="tab-btn" data-target="resultats">Résultats</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Candidats Section -->
+            <section id="candidats" class="tab-content active">
+                <div class="section-header">
+                    <h2>Liste des Candidats</h2>
+                    <button class="btn-primary" onclick="showAddForm('candidat')">+ Nouveau Candidat</button>
+                </div>
+                <div class="table-container">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Matricule</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidats-tbody">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Correcteurs Section -->
+            <section id="correcteurs" class="tab-content">
+                <div class="section-header">
+                    <h2>Liste des Correcteurs</h2>
+                    <button class="btn-primary" onclick="showAddForm('correcteur')">+ Nouveau Correcteur</button>
+                </div>
+                <div class="table-container">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="correcteurs-tbody">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Matières Section -->
+            <section id="matieres" class="tab-content">
+                <div class="section-header">
+                    <h2>Liste des Matières</h2>
+                    <button class="btn-primary" onclick="showAddForm('matiere')">+ Nouvelle Matière</button>
+                </div>
+                <div class="table-container">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matieres-tbody">
+                            <!-- Data populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Paramètres Section -->
+            <section id="parametres" class="tab-content">
+                <div class="section-header">
+                    <h2>Liste des Paramètres</h2>
+                    <button class="btn-primary" onclick="showAddForm('parametre')">+ Nouveau Paramètre</button>
+                </div>
+                <div id="parametres-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
+                </div>
+            </section>
+
+            <!-- Notes Section -->
+            <section id="notes" class="tab-content">
+                <div class="section-header">
+                    <h2>Liste des Notes</h2>
+                    <button class="btn-primary" onclick="showAddForm('note')">+ Nouvelle Note</button>
+                </div>
+                <!-- Container for the dynamic cards -->
+                <div id="notes-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
+                </div>
+                </div>
+            </section>
+
+            <!-- Résultats Section -->
+            <section id="resultats" class="tab-content">
+                <div class="section-header">
+                    <h2>Résultats Calculés</h2>
+                    <!-- Pas de bouton d'ajout pour les résultats (lecture seule) -->
+                </div>
+                <div id="resultats-cards-container" class="cards-grid">
+                    <!-- Cards populated by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Form (Hidden by default) -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <h3 id="modal-title">Ajouter</h3>
+            <form id="data-form">
+                <input type="hidden" id="form-id">
+                <input type="hidden" id="form-type">
+                
+                <div class="form-group">
+                    <label for="form-nom">Nom</label>
+                    <input type="text" id="form-nom" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-prenom">Prénom</label>
+                    <input type="text" id="form-prenom" required>
+                </div>
+                
+                <div class="form-group" id="matricule-group">
+                    <label for="form-matricule">Matricule</label>
+                    <input type="text" id="form-matricule">
+                </div>
+                
+                <div class="form-group" id="candidat-group" style="display: none;">
+                    <label for="form-candidat">Candidat</label>
+                    <select id="form-candidat"></select>
+                </div>
+
+                <div class="form-group" id="matiere-group" style="display: none;">
+                    <label for="form-matiere">Matière</label>
+                    <select id="form-matiere"></select>
+                </div>
+                
+                <div class="form-group" id="correcteur-group" style="display: none;">
+                    <label for="form-correcteur">Correcteur</label>
+                    <select id="form-correcteur"></select>
+                </div>
+
+                <div class="form-group" id="operateur-group" style="display: none;">
+                    <label for="form-operateur">Opérateur</label>
+                    <select id="form-operateur"></select>
+                </div>
+
+                <div class="form-group" id="resolution-group" style="display: none;">
+                    <label for="form-resolution">Résolution</label>
+                    <select id="form-resolution"></select>
+                </div>
+
+                <div class="form-group" id="seuil-group" style="display: none;">
+                    <label for="form-seuil">Seuil</label>
+                    <input type="number" id="form-seuil" step="0.01">
+                </div>
+                
+                <div class="form-group" id="note-group" style="display: none;">
+                    <label for="form-note">Note</label>
+                    <input type="number" id="form-note" step="0.01">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOUVEAU MODAL : Détails des Notes -->
+    <div id="notes-modal" class="modal-overlay">
+        <div class="modal-content glass-panel" style="max-width: 600px;">
+            <h3 id="notes-modal-title">Notes de: Candidat</h3>
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Matière</th>
+                            <th>Note Finale</th>
+                            <th>Condition</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidat-notes-detail-tbody">
+                        <!-- Remplit via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-actions" style="margin-top: 1.5rem;">
+                <button type="button" class="btn-secondary" onclick="closeNotesModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -8,6 +8,7 @@ public class ResultatDTO {
     private Double noteCalculee;
     private Double seuil;
     private String operateur;
+    private Double reliquat;
     private String status; // "Admis" ou "Ajourné"
 
     public ResultatDTO() {}
@@ -26,6 +27,8 @@ public class ResultatDTO {
     public void setSeuil(Double seuil) { this.seuil = seuil; }
     public String getOperateur() { return operateur; }
     public void setOperateur(String operateur) { this.operateur = operateur; }
+    public Double getReliquat() { return reliquat; }
+    public void setReliquat(Double reliquat) { this.reliquat = reliquat; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 }
