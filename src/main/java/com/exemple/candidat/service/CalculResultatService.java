@@ -110,8 +110,15 @@ public class CalculResultatService {
     private boolean verifierSeuil(double note, double seuil, String operateur) {
         if (">".equals(operateur)) {
             return note > seuil;
-        } else if ("<".equals(operateur)) {
+        }
+        if ("<".equals(operateur)) {
             return note < seuil;
+        }
+        if ("<=".equals(operateur)) {
+            return note <= seuil;
+        }
+        if (">=".equals(operateur)) {
+            return note >= seuil;
         }
         return false;
     }
