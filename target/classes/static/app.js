@@ -297,7 +297,10 @@ async function loadResultats() {
                     <div class="result-item">
                         <div class="result-info">
                             <span class="result-matiere">${r.nomMatiere}</span>
-                            <span class="result-condition">Condition: ${r.operateur} ${r.seuil}</span>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 2px;">
+                                <span class="result-condition">Condition: ${r.operateur} ${r.seuil}</span>
+                                <span class="result-condition" style="background: rgba(96, 165, 250, 0.15); color: #93c5fd; border: 1px solid rgba(96, 165, 250, 0.3);">Écart: ${r.diff !== null ? r.diff.toFixed(2) : '-'}</span>
+                            </div>
                         </div>
                         <div class="result-score-status" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -621,6 +624,7 @@ async function viewCandidatNotes(candidatId, nom, prenom) {
                     <tr>
                         <td>${r.nomMatiere}</td>
                         <td><strong>${r.noteCalculee}</strong></td>
+                        <td><span style="color: #60a5fa; font-weight: 500;">${r.diff !== null ? r.diff.toFixed(2) : '-'}</span></td>
                         <td>${r.operateur} ${r.seuil}</td>
                         <td><span class="result-status ${statusClass}" style="font-size: 0.7rem;">${r.status}</span></td>
                     </tr>
