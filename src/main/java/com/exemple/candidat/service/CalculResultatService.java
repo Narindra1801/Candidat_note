@@ -62,32 +62,61 @@ public class CalculResultatService {
                     dto.setMatricule(candidat.getMatricule());
                     dto.setNomMatiere(matiere.getNom());
 
-                    double sommeDiff = 0.0;
-                    String status = "Admis";
-                    Parametre activeParam = paramsMatiere.get(0);
-                    
-                    // On prend la note maximale pour l'affichage comme "Note Finale" demandée par le client
-                    double maxNoteMatiere = notesPourMatiere.stream().mapToDouble(Note::getNote).max().orElse(0.0);
+                    double diff = calculerSommeDiff(notesPourMatiere);
 
+                    // 1. Filtrer les paramètres dont la condition est remplie par la différence
+                    List<Parametre> paramsValides = new ArrayList<>();
                     for (Parametre param : paramsMatiere) {
-                        activeParam = param;
-                        double noteEffective = appliquerResolution(notesPourMatiere, param.getResolution().getId());
-                        sommeDiff += (noteEffective - param.getSeuil());
-
-                        if (!verifierSeuil(noteEffective, param.getSeuil(), param.getOperateur().getOperateur())) {
-                            status = "Ajourné";
-                            break; 
+                        if (verifierSeuil(diff, param.getSeuil(), param.getOperateur().getOperateur())) {
+                            paramsValides.add(param);
                         }
                     }
 
-                    dto.setSeuil(activeParam.getSeuil());
-                    dto.setOperateur(activeParam.getOperateur().getOperateur());
-                    dto.setNoteCalculee(Math.round(maxNoteMatiere * 100.0) / 100.0);
-                    dto.setReliquat(Math.round(sommeDiff * 100.0) / 100.0);
-                    dto.setStatus(status);
+                    // 2. S'il y a plusieurs paramètres valides, on cherche le seuil le plus proche
+                    Parametre matchedParam = null;
+                    if (!paramsValides.isEmpty()) {
+                        double minDistance = Double.MAX_VALUE;
+                        for (Parametre param : paramsValides) {
+                            double currentDistance = Math.abs(diff - param.getSeuil());
+
+                            if (matchedParam == null) {
+                                matchedParam = param;
+                                minDistance = currentDistance;
+                            } else if (currentDistance < minDistance) {
+                                // Plus proche
+                                matchedParam = param;
+                                minDistance = currentDistance;
+                            } else if (currentDistance == minDistance) {
+                                // En cas d'égalité (ex: milieu), prendre le plus petit seuil
+                                if (param.getSeuil() < matchedParam.getSeuil()) {
+                                    matchedParam = param;
+                                }
+                            }
+                        }
+                    }
+
+                    if (matchedParam != null) {
+                        double noteEffective = appliquerResolution(notesPourMatiere, matchedParam.getResolution().getId());
+                        double reliquat = noteEffective - matchedParam.getSeuil(); 
+                        
+                        dto.setDiff(Math.round(diff * 100.0) / 100.0);
+                        dto.setSeuil(matchedParam.getSeuil());
+                        dto.setOperateur(matchedParam.getOperateur().getOperateur());
+                        dto.setNoteCalculee(Math.round(noteEffective * 100.0) / 100.0);
+                        dto.setReliquat(Math.round(reliquat * 100.0) / 100.0);
+                        
+                        dto.setStatus(verifierSeuil(noteEffective, matchedParam.getSeuil(), matchedParam.getOperateur().getOperateur()) ? "Admis" : "Ajourné");
+                    } else {
+                        // Fallback
+                        double maxNote = notesPourMatiere.stream().mapToDouble(Note::getNote).max().orElse(0.0);
+                        dto.setDiff(Math.round(diff * 100.0) / 100.0);
+                        dto.setNoteCalculee(maxNote);
+                        dto.setStatus("Ajourné");
+                    }
 
                     resultats.add(dto);
                 }
+
             }
         }
         return resultats;
@@ -110,9 +139,31 @@ public class CalculResultatService {
     private boolean verifierSeuil(double note, double seuil, String operateur) {
         if (">".equals(operateur)) {
             return note > seuil;
-        } else if ("<".equals(operateur)) {
+        }
+        if ("<".equals(operateur)) {
             return note < seuil;
         }
+        if ("<=".equals(operateur)) {
+            return note <= seuil;
+        }
+        if (">=".equals(operateur)) {
+            return note >= seuil;
+        }
         return false;
+    }
+
+    private double calculerSommeDiff(List<Note> notes) {
+        if (notes.isEmpty()) return 0.0;
+        List<Integer> idNotesTraitees = new ArrayList<>();
+        double sommeDiff = 0.0;
+        for (int i = 0; i < notes.size(); i++) {
+            idNotesTraitees.add(notes.get(i).getId());
+            for (int j = 0; j < notes.size(); j++) {
+                if (i != j && !idNotesTraitees.contains(notes.get(j).getId())) {
+                    sommeDiff += Math.abs(notes.get(i).getNote() - notes.get(j).getNote());
+                }
+            }
+        }
+        return sommeDiff;
     }
 }

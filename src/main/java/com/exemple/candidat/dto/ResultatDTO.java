@@ -8,10 +8,14 @@ public class ResultatDTO {
     private Double noteCalculee;
     private Double seuil;
     private String operateur;
+    private Double diff;
     private Double reliquat;
     private String status; // "Admis" ou "Ajourné"
 
     public ResultatDTO() {}
+
+    public Double getDiff() { return diff; }
+    public void setDiff(Double diff) { this.diff = diff; }
 
     public String getNomCandidat() { return nomCandidat; }
     public void setNomCandidat(String nomCandidat) { this.nomCandidat = nomCandidat; }
